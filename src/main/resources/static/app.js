@@ -29,7 +29,7 @@ function connect() {
 
 function addPointToCanvas(point){
     var newpoint=JSON.parse(point.body);
-     alert("nuevo punto generado:"+newpoint.x);
+     //alert("nuevo punto generado:"+newpoint.x);
      
      
      
@@ -49,13 +49,48 @@ function disconnect() {
 }
 
 function sendPoint() {
-    stompClient.send("/app/newpoint", {}, JSON.stringify({x:10,y:10}));
+    //stompClient.send("/app/newpoint", {}, JSON.stringify({x:10,y:10}));
+    
+    stompClient.send("/topic/newpoint", {}, JSON.stringify({x:10,y:10}));
+    
 }
+
+function getMousePos(canvas, evt) {
+        canvas = document.getElementById("canvas");
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+
+function init() {
+            can = document.getElementById("canvas");
+            ctx = can.getContext("2d");
+ 
+            can.addEventListener("mousedown", 
+                function(evt){
+                    var mousePos = getMousePos(can, evt);
+                    //var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+                    stompClient.send("/topic/newpoint", {}, JSON.stringify({x:mousePos.x,y:mousePos.y}));
+                
+                }
+            , false);
+            /*can.addEventListener("mousemove", mouseXY, false);
+            can.addEventListener("touchstart", touchDown, false);
+            can.addEventListener("touchmove", touchXY, true);
+            can.addEventListener("touchend", touchUp, false);*/
+ 
+            /*document.body.addEventListener("mouseup", mouseUp, false);
+            document.body.addEventListener("touchcancel", touchUp, false);*/
+        }
+
 
 $(document).ready(
         function () {
             connect();
             console.info('connecting to websockets');
+            init();
 
         }
 );
