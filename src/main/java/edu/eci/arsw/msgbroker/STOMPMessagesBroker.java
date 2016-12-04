@@ -30,14 +30,14 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class STOMPMessagesBroker {
 
-    /*@Autowired
+    @Autowired
     SimpMessagingTemplate msgt;
     
     @MessageMapping("/newpoint")    
     public void getLine(Point pt) throws Exception {
         System.out.println("got new point");
         msgt.convertAndSend("/topic/newpoint",pt);
-    }*/
+    }
 
     
 }

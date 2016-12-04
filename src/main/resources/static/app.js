@@ -17,14 +17,34 @@ var stompClient = null;
 function connect() {
     var socket = new SockJS('/stompendpoint');
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
+
+
+    stompClient.connect("gmmufdcu", "jVSrX2Ft3_VNgdVX4LKoJlW_NEZ-S8_Y", 
+
+        function(frame){
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/newpoint', function (greeting) {
+               
+                addPointToCanvas(greeting);
+            });
+
+        }
+        , 
+        function(error){
+            console.info("error"+error);
+        }
+
+        , "gmmufdcu");
+
+
+    /*stompClient.connect({}, function (frame) {
         //setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/newpoint', function (greeting) {
+        stompClient.subscribe('/app/newpoint', function (greeting) {
            
             addPointToCanvas(greeting);
         });
-    });
+    });*/
 }
 
 function addPointToCanvas(point){
@@ -51,7 +71,7 @@ function disconnect() {
 function sendPoint() {
     //stompClient.send("/app/newpoint", {}, JSON.stringify({x:10,y:10}));
     
-    stompClient.send("/topic/newpoint", {}, JSON.stringify({x:10,y:10}));
+    stompClient.send("/app/newpoint", {}, JSON.stringify({x:10,y:10}));
     
 }
 
@@ -72,7 +92,7 @@ function init() {
                 function(evt){
                     var mousePos = getMousePos(can, evt);
                     //var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
-                    stompClient.send("/topic/newpoint", {}, JSON.stringify({x:mousePos.x,y:mousePos.y}));
+                    stompClient.send("/app/newpoint", {}, JSON.stringify({x:mousePos.x,y:mousePos.y}));
                 
                 }
             , false);
